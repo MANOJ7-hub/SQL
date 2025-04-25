@@ -1,23 +1,24 @@
-SELECT 
-    cust.Name AS CustomerName,
+-- Write a SQL query to locate those salespeople who do not live in the same city where their customers live and have received a commission of more than 12%
+   from the company. Return Customer Name, customer city, Salesman, salesman city, commission.
+
+SELECT DISTINCT
+    custPerson.FirstName + ' ' + custPerson.LastName AS CustomerName,
     custAddr.City AS CustomerCity,
-    sperson.FirstName + ' ' + sperson.LastName AS SalespersonName,
-    spAddr.City AS SalespersonCity,
-	sp.CommissionPct
-	
-FROM Sales.SalesOrderHeader soh
-JOIN Sales.Customer c ON soh.CustomerID = c.CustomerID
-JOIN Sales.Store cust ON c.StoreID = cust.BusinessEntityID
-JOIN Person.BusinessEntityAddress custBEA ON cust.BusinessEntityID = custBEA.BusinessEntityID
+    salesPerson.FirstName + ' ' + salesPerson.LastName AS SalesmanName,
+    salesAddr.City AS SalesmanCity,
+    salesRep.CommissionPct  AS Commission
+FROM Sales.SalesOrderHeader salesOrder
+JOIN Sales.Customer cust ON salesOrder.CustomerID = cust.CustomerID
+JOIN Sales.SalesPerson salesRep ON salesOrder.SalesPersonID = salesRep.BusinessEntityID
+JOIN Person.Person salesPerson ON salesRep.BusinessEntityID = salesPerson.BusinessEntityID
+JOIN Person.Person custPerson ON cust.PersonID = custPerson.BusinessEntityID
+JOIN Person.BusinessEntityAddress custBEA ON cust.StoreID = custBEA.BusinessEntityID
 JOIN Person.Address custAddr ON custBEA.AddressID = custAddr.AddressID
+JOIN Person.BusinessEntityAddress salesBEA ON salesRep.BusinessEntityID = salesBEA.BusinessEntityID
+JOIN Person.Address salesAddr ON salesBEA.AddressID = salesAddr.AddressID
 
-JOIN Sales.SalesPerson sp ON soh.SalesPersonID = sp.BusinessEntityID
-JOIN Person.Person sperson ON sp.BusinessEntityID = sperson.BusinessEntityID
-JOIN Person.BusinessEntityAddress spBEA ON sp.BusinessEntityID = spBEA.BusinessEntityID
-JOIN Person.Address spAddr ON spBEA.AddressID = spAddr.AddressID
-
-WHERE custAddr.City <> spAddr.City
-AND sp.CommissionPct > 0.012;
+WHERE custAddr.City <> salesAddr.City
+  AND salesRep.CommissionPctÂ >Â 0.0012;
 
 --ASSIGNMENT-2
 
@@ -66,7 +67,7 @@ WHERE
         WHERE eph3.BusinessEntityID = e.BusinessEntityID
     )
 ORDER BY 
-    SalaryDifference DESC;
+    SalaryDifferenceÂ DESC;
 
 
 --ASSIGNMENT--4
@@ -127,4 +128,4 @@ FROM
     HumanResources.Employee e
     JOIN Person.Person p ON e.BusinessEntityID = p.BusinessEntityID
 WHERE 
-    e.JobTitle LIKE 'Sales%';
+    e.JobTitleÂ LIKEÂ 'Sales%';
